@@ -11,6 +11,7 @@ avali_proxy = []
 for i in range(10):
     #print i
     requrl = "http://www.kuaidaili.com/free/outha/" + str(i+1)
+    # http://cn-proxy.com/
     print requrl
     req = urllib2.Request(requrl)
     pages = urllib2.urlopen(req)
