@@ -5,6 +5,9 @@ import urllib2;
 from bs4 import BeautifulSoup
 import re
 import csv
+import time
+import StringIO
+import gzip
 
 #arr = []
 avali_proxy = []
@@ -13,9 +16,28 @@ for i in range(10):
     requrl = "http://www.kuaidaili.com/free/outha/" + str(i+1)
     # http://cn-proxy.com/
     print requrl
+    #h = {'User-Agent': 'Mozilla/5.0'}
+    h = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.100 Safari/537.36',
+        'Referer' : 'http://www.kuaidaili.com/free/outha/20/',
+        'Accept-Encoding' : 'gzip'
+    }
+    #req = urllib2.Request(requrl,headers=h)
     req = urllib2.Request(requrl)
     pages = urllib2.urlopen(req)
-    html =  pages.read()
+    
+    if pages.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO(response.read())
+        f = gzip.GzipFile(fileobj=buf)
+        html = f.read()
+
+    print(pages.info().get('Content-Encoding'))
+    html = pages.read()
+    compresseddata =  pages.read()
+    compressedstream = StringIO.StringIO(compresseddata)
+    gzipper = gzip.GzipFile(fileobj=compressedstream)
+    #html = gzipper.read()
+    #print html
     soup =  BeautifulSoup(html, "lxml")
     table = soup.find("table",{"class" : "table table-bordered table-striped"})
 
@@ -44,8 +66,9 @@ for i in range(10):
     
             #print("%s:%s" %(IP_ADDR,PORT))
             proxy_addr = IP_ADDR + ":" +  PORT
-            #print proxy_addr
+            print proxy_addr
             arr.append(proxy_addr)
+    time.sleep(3)
     avali_proxy.extend(arr[1:])
 
      
@@ -62,6 +85,8 @@ print len(avali_proxy)
 
 
 
+#http://www.jianshu.com/p/2c2781462902
+#https://my.oschina.net/jhao104/blog/647308
 
 #def parse_html(text): 
 #    soup = BeautifulSoup(text, "lxml", from_encoding="UTF-8")
