@@ -25,19 +25,21 @@ for i in range(10):
     #req = urllib2.Request(requrl,headers=h)
     req = urllib2.Request(requrl)
     pages = urllib2.urlopen(req)
-    
+    print(pages.info().get('Content-Encoding'))
+
     if pages.info().get('Content-Encoding') == 'gzip':
-        buf = StringIO(response.read())
+        print pages.read()
+        buf = StringIO.StringIO(pages.read())
         f = gzip.GzipFile(fileobj=buf)
         html = f.read()
 
-    print(pages.info().get('Content-Encoding'))
     html = pages.read()
-    compresseddata =  pages.read()
-    compressedstream = StringIO.StringIO(compresseddata)
-    gzipper = gzip.GzipFile(fileobj=compressedstream)
+    #compresseddata =  pages.read()
+    #compressedstream = StringIO.StringIO(compresseddata)
+    #gzipper = gzip.GzipFile(fileobj=compressedstream)
     #html = gzipper.read()
-    #print html
+    print html
+
     soup =  BeautifulSoup(html, "lxml")
     table = soup.find("table",{"class" : "table table-bordered table-striped"})
 
